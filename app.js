@@ -118,38 +118,25 @@ const search = () => {
   let newSearch;
   const input = document.querySelector('.js-input')
   let combinedHTML = '';
-  input.addEventListener('keydown', e =>{
-    if(e.key != 'Backspace' && e.key != 'Enter' && e.key != 'Alt' && e.key != 'Shift'){
-      mySearch.push(e.key);
-      newSearch = mySearch.join("");
-    }
-    if(e.key === 'Backspace' && mySearch != []){
-      let temp = mySearch;
-      temp.splice(temp.length-1,1);
-      mySearch = temp;
-      newSearch = mySearch.join("");
-    }
-    if(newSearch.length == 0 || e.key === 'Enter'){
-      reset();
-      e.target.value = '';
-      mySearch = [];
-      newSearch = [];
-      reset();
-    }
-    
-    const val = newSearch.toString().toLowerCase();
-    for(let i = 0; i < playlist.songs.length; i++){
-      if(playlist.songs[i].name.toLowerCase().includes((val))){
+  input.addEventListener('keyup', e => {
+    let val = e.target.value;
+    for (let i = 0; i < playlist.songs.length; i++) {
+      let artists = playlist.songs[i].artists
+      if (playlist.songs[i].name.toLowerCase().includes((val))) {
         combinedHTML += objectToHTML(playlist.songs[i]);
-        const song_list = document.querySelector('.song-list');
-        song_list.innerHTML = combinedHTML;
-        
+      } else {
+        for (let j = 0; j < artists.length; j++) {
+          if (artists[j].toLowerCase().includes(val)) {
+            combinedHTML += objectToHTML(playlist.songs[i]);
+          }
+        }
       }
-
+      const song_list = document.querySelector('.song-list');
+      song_list.innerHTML = combinedHTML;
     }
     combinedHTML = '';
   })
-} 
+}
 render();
 reset();
 search();
